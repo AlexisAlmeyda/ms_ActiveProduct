@@ -2,6 +2,8 @@ package com.api.rest.springboot.webflux.activeproduct.controller;
 
 import javax.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,74 +23,44 @@ import reactor.core.publisher.Mono;
 @RestController
 @RequestMapping("/api/active")
 public class ActiveProductController {
-  
+
+  private static final Logger logger = LoggerFactory.getLogger(ActiveProductController.class);
+
   @Autowired
   private ActiveProductResource activeProductResource;
-  
+
   @GetMapping
-  public Flux<ActiveProductDto> findAll(){
-      return activeProductResource.findAll();
+  public Flux<ActiveProductDto> findAll() {
+    logger.debug("Getting ActiveProduct");
+    return activeProductResource.findAll();
   }
-  
+
   @PostMapping
-  public Mono<ActiveProductDto> createActive(@Valid @RequestBody ActiveProductDto activeProductDto){
-      return activeProductResource.create(activeProductDto);
+  public Mono<ActiveProductDto> createActive(@Valid @RequestBody ActiveProductDto activeProductDto) {
+    logger.debug("Create ActiveProduct");
+    return activeProductResource.create(activeProductDto);
   }
-  
+
   @GetMapping("/{id}")
-  public Mono<ActiveProductDto> listById(@PathVariable String id){
+  public Mono<ActiveProductDto> listById(@PathVariable String id) {
+    logger.debug("Getting ActiveProductbyid");
     return activeProductResource.findById(id);
   }
-  
+
   @PutMapping("/{id}")
-  public Mono<ActiveProductDto> update(@RequestBody ActiveProductDto activeProductDto, @PathVariable String id){
-      return activeProductResource.update(activeProductDto, id);
+  public Mono<ActiveProductDto> update(@RequestBody ActiveProductDto activeProductDto, @PathVariable String id) {
+    logger.debug("Putting ActiveProductbyid");
+    return activeProductResource.update(activeProductDto, id);
   }
-  
+
   @DeleteMapping("/{id}")
-  public Mono<Void> remove(@PathVariable String id){
+  public Mono<Void> remove(@PathVariable String id) {
     return activeProductResource.delete(id);
   }
-  
+
   @GetMapping("/clientActive/{idClient}")
-  public Flux<ActiveProductDto> listByIdClient(@PathVariable("idClient") String idClient){
+  public Flux<ActiveProductDto> listByIdClient(@PathVariable("idClient") String idClient) {
     return activeProductResource.listByIdClient(idClient);
   }
-  
-  /*
-  @GetMapping
-  public Flux<ActiveProduct> toList(){
-      return activeService.findAll();
-  }
-  
-  @PostMapping
-  public Mono<ActiveProduct> createActive(@Valid @RequestBody ActiveProduct active){
-      return activeService.save(active);
-  }
-  
-  @GetMapping("/{id}")
-  public Mono<ResponseEntity<ActiveProduct>> listById(@PathVariable String id){
-    return activeService.findById(id).map(c -> ResponseEntity.ok()
-        .contentType(MediaType.APPLICATION_JSON_UTF8)
-        .body(c))
-        .defaultIfEmpty(ResponseEntity.notFound().build());
-  }
-  
-  @PutMapping("/{id}")
-  public Mono<ResponseEntity<ActiveProduct>> edit(@RequestBody ActiveProduct active, @PathVariable String id) {
-    return activeService.findById(id).flatMap(c -> {
-      c.setCreditCardNumber(active.getCreditCardNumber());
-      c.setStatus(active.getStatus());
-      c.setIdClient(active.getIdClient());
 
-      return activeService.save(c);
-    }).map(c -> ResponseEntity.created(URI.create("/api/active/".concat(c.getId())))
-        .contentType(MediaType.APPLICATION_JSON_UTF8).body(c)).defaultIfEmpty(ResponseEntity.notFound().build());
-  }
-  
-  @GetMapping("/clientActive/{idClient}")
-  public Flux<ActiveProduct> listByIdClient(@PathVariable("idClient") String idClient){
-    return activeService.byIdClient(idClient);
-  }*/
-  
 }
